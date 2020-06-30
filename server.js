@@ -12,7 +12,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/loginteste", {
 mongoose.Promise = global.Promise;
 const server = express();
 
-server.use(router);
 server.use(express.urlencoded({ extended: true }));
 
 server.use(express.static("public"));
@@ -23,6 +22,9 @@ server.use(
     saveUninitialized: false,
   })
 );
+
+server.use(express.json());
+server.use(router);
 
 server.set("view engine", "njk");
 
