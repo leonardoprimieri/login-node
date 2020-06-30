@@ -12,4 +12,8 @@ router.post("/register", UserController.registerAction);
 router.get("/login", UserController.login);
 router.post("/login", UserController.loginAction);
 
+router.get("/logout", UserController.logout);
+
+router.get("/secret", HomeController.secret);
+
 module.exports = router;

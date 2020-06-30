@@ -1,14 +1,35 @@
+const User = require("../models/User");
 module.exports = {
-  register(req, res) {
+  async register(req, res) {
     return res.render("register");
   },
-  registerAction(req, res) {
-    return res.send(req.body);
+  async registerAction(req, res) {
+    const newUser = new User(req.body);
+    User.register(newUser, req.body.password, (error) => {
+      if (error) {
+        console.log("Aqui erro" + error);
+        return res.redirect("/");
+      }
+
+      return res.redirect("/login");
+    });
   },
   login(req, res) {
     return res.render("login");
   },
   loginAction(req, res) {
-    return res.send(req.body);
+    const authenticateUser = User.authenticate();
+
+    authenticateUser(req.body.email, req.body.password, (error, result) => {
+      if (!result) return res.redirect("/login");
+
+      req.login(result, () => {});
+
+      return res.redirect("/");
+    });
+  },
+  logout(req, res) {
+    req.logout();
+    return res.redirect("/");
   },
 };

@@ -3,5 +3,11 @@
   <a href="/register">Registrar-se</a>
   <a href="/login">Entrar</a>
   <a href="/secret">Secreto</a>
+  {% if user %}
+    <p>Bem vindo
+      {{user.name}}
+      <a href="/logout">Sair</a>
+    </p>
+  {% endif %}
 </div>
 <br><br>

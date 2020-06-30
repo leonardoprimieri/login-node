@@ -4,6 +4,9 @@ const router = require("./src/router/router");
 const mongoose = require("mongoose");
 const session = require("express-session");
 
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+
 mongoose.connect("mongodb://127.0.0.1:27017/loginteste", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -22,6 +25,19 @@ server.use(
     saveUninitialized: false,
   })
 );
+
+server.use(passport.initialize());
+server.use(passport.session());
+const User = require("./src/models/User");
+
+server.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 server.use(express.json());
 server.use(router);
