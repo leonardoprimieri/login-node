@@ -1,11 +1,8 @@
 const express = require("express");
 const nunjucks = require("nunjucks");
-const router = require("./src/routes/router");
+const router = require("./src/router/router");
 const mongoose = require("mongoose");
 const session = require("express-session");
-
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
 
 mongoose.connect("mongodb://127.0.0.1:27017/loginteste", {
   useNewUrlParser: true,
@@ -15,6 +12,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/loginteste", {
 mongoose.Promise = global.Promise;
 const server = express();
 
+server.use(router);
 server.use(express.urlencoded({ extended: true }));
 
 server.use(express.static("public"));
@@ -25,23 +23,6 @@ server.use(
     saveUninitialized: false,
   })
 );
-
-server.use(passport.initialize());
-server.use(passport.session());
-
-server.use((req, res, next) => {
-  res.locals.user = req.user;
-
-  next();
-});
-
-const User = require("./src/models/User");
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
-server.use(express.json());
-server.use(router);
 
 server.set("view engine", "njk");
 
